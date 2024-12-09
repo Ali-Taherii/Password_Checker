@@ -9,8 +9,9 @@ class UserInterface {
 public:
 	UserInterface();
 	void displayMenu();
-	void promptUser();
-	void displayResults();
+	int promptUser();
+	void displayResults(const std::string& result);
+	
 };
 
 #endif // !USERINTERFACE_H

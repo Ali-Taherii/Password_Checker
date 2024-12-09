@@ -12,12 +12,21 @@ void UserInterface::displayMenu()
 	std::cout << "3. Check a list of passwords for complexity" << std::endl;
 	std::cout << "4. Generate a list of weak passwords" << std::endl;
 	std::cout << "5. Explain how the program works" << std::endl;
+	std::cout << "6. Exit" << std::endl;
 }
 
-void UserInterface::promptUser()
-{
+int UserInterface::promptUser() {
+	int choice;
+	std::cout << "Enter your choice (1-6): ";
+	while (!(std::cin >> choice) || choice < 1 || choice > 6) {
+		std::cout << "Invalid input. Please enter a number between 1 and 6: ";
+		std::cin.clear();  // Clear the error flag
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Ignore invalid input
+	}
+	return choice;
 }
 
-void UserInterface::displayResults()
-{
+void UserInterface::displayResults(const std::string& result) {
+	std::cout << "\n===== Result =====" << std::endl;
+	std::cout << result << std::endl;
 }

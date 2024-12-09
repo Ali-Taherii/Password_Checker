@@ -1,7 +1,12 @@
 #include "PasswordValidator.h"
 
-bool PasswordValidator::checkLength(const std::string& password)
-{
+PasswordValidator::PasswordValidator(const std::vector<std::string>& commonPasswordsList) {
+    for (const auto& password : commonPasswordsList) {
+        commonPasswords.insert(password);
+    }
+}
+
+bool PasswordValidator::checkLength(const std::string& password) {
     return password.length() >= 12;
 }
 
@@ -18,26 +23,27 @@ bool PasswordValidator::containsUpperCase(const std::string& password) {
     return std::any_of(password.begin(), password.end(), ::isupper);
 }
 
-bool PasswordValidator::containsLowerCase(const std::string& password)
-{
+bool PasswordValidator::containsLowerCase(const std::string& password) {
     return std::any_of(password.begin(), password.end(), ::islower);
 }
 
-bool PasswordValidator::containsNumber(const std::string& password)
-{
+bool PasswordValidator::containsNumber(const std::string& password) {
     return std::any_of(password.begin(), password.end(), ::isdigit);
 }
 
 bool PasswordValidator::isNotCommon(const std::string& password) {
-    
-    static std::unordered_set<std::string> commonPasswords;
-    if (commonPasswords.empty()) {
-        std::ifstream file("C:\\Users\\alita\\Downloads\\10-million-password-list-top-100.txt"); // Load the weak passwords list
-        std::string commonPassword;
-        while (std::getline(file, commonPassword)) {
-            commonPasswords.insert(commonPassword);
-        }
-    }
 
-    return commonPasswords.find(password) == commonPasswords.end();
+    if (!commonPasswords.empty()) {
+
+        // Check if the password exists in the set
+        for (std::string p : commonPasswords) {
+            if (password == p)
+                return true;
+        }
+
+        return false;
+    } 
+    else {
+        std::cout << "The list of common passwords was not loaded" << std::endl;
+    }
 }

@@ -4,6 +4,8 @@
 
 #include <string>
 #include <vector>
+#include <random>
+#include <algorithm>
 
 class Password {
 
@@ -13,7 +15,8 @@ private:
 public:
 	bool isValid();
 	std::vector<std::string> unmetRequirements();
-	void generateRandom();
+	void generateRandom(); // Generate a random password
+	const std::string& getValue() const { return value; } // Getter for the password
 };
 
 #endif // !PASSWORD_H
