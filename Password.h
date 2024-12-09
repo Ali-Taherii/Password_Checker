@@ -16,5 +16,4 @@ public:
 	void generateRandom();
 };
 
-
 #endif // !PASSWORD_H

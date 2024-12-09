@@ -2,7 +2,11 @@
 #ifndef PASSWORDVALIDATOR_H
 #define PASSWORDVALIDATOR_H
 
+#include <cctype>
+#include <algorithm>
+#include <fstream>
 #include <string>
+#include <unordered_set>
 
 class PasswordValidator {
 

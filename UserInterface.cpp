@@ -1,4 +1,3 @@
-#include <iostream>
 #include "UserInterface.h"
 
 UserInterface::UserInterface() {

@@ -2,6 +2,8 @@
 #ifndef USERINTERFACE_H
 #define USERINTERFACE_H
 
+#include <iostream>
+
 class UserInterface {
 	
 public:
