@@ -1,15 +1,45 @@
 #include "Password.h"
 
-bool Password::isValid()
+bool Password::setValue(std::string v)
 {
-	return false;
+    if (v != ""){
+        this->value = v;
+    return true;
+    }
+
+    return false;
 }
 
-std::vector<std::string> Password::unmetRequirements()
+void Password::checkComplexity(PasswordValidator pv)
 {
-	return std::vector<std::string>();
+    if (!pv.checkLength(this->value))
+        this->unmetRequirments.push_back("Your password is not long enough (at least 12 characters)");
+
+    if (!pv.containsLowerCase(this->value))
+        this->unmetRequirments.push_back("Your password does not have any lowercase letters");
+
+    if (!pv.containsUpperCase(this->value))
+        this->unmetRequirments.push_back("Your password does not have any uppercase letters");
+
+    if (!pv.containsNumber(this->value))
+        this->unmetRequirments.push_back("Your password does not have any numbers");
+
+    if (!pv.containsSpecialChar(this->value))
+        this->unmetRequirments.push_back("Your password does not have any special characters");
+
+    if (!pv.isNotCommon(this->value))
+        this->unmetRequirments.push_back("Your password exists in the 10000 weak passwords list");
 }
 
+void Password::showUnmetRequirements()
+{
+    if (this->unmetRequirments.size() != 0)
+        for (std::string msg : unmetRequirments)
+            std::cout << msg << std::endl;
+
+    else
+        std::cout << "Your password meets all the complexity requirements" << std::endl;
+}
 
 void Password::generateRandom() {
     const int passwordLength = 12;

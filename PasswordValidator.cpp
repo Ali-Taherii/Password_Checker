@@ -11,7 +11,7 @@ bool PasswordValidator::checkLength(const std::string& password) {
 }
 
 bool PasswordValidator::containsSpecialChar(const std::string& password) {
-    // The set of special characters
+    // The set of special characters (OWASP)
     const std::string SPECIAL_CHARACTERS = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
     return std::any_of(password.begin(), password.end(), [&](char c) {
@@ -38,12 +38,13 @@ bool PasswordValidator::isNotCommon(const std::string& password) {
         // Check if the password exists in the set
         for (std::string p : commonPasswords) {
             if (password == p)
-                return true;
+                return false;
         }
 
-        return false;
+        return true;
     } 
     else {
         std::cout << "The list of common passwords was not loaded" << std::endl;
+        return true;
     }
 }

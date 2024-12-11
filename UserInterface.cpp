@@ -15,17 +15,6 @@ void UserInterface::displayMenu()
 	std::cout << "6. Exit" << std::endl;
 }
 
-int UserInterface::promptUser() {
-	int choice;
-	std::cout << "Enter your choice (1-6): ";
-	while (!(std::cin >> choice) || choice < 1 || choice > 6) {
-		std::cout << "Invalid input. Please enter a number between 1 and 6: ";
-		std::cin.clear();  // Clear the error flag
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // Ignore invalid input
-	}
-	return choice;
-}
-
 void UserInterface::displayResults(const std::string& result) {
 	std::cout << "\n===== Result =====" << std::endl;
 	std::cout << result << std::endl;

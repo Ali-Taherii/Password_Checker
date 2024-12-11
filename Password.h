@@ -6,17 +6,20 @@
 #include <vector>
 #include <random>
 #include <algorithm>
+#include "PasswordValidator.h"
 
 class Password {
 
 private: 
 	std::string value;
+	std::vector<std::string> unmetRequirments;
 
 public:
-	bool isValid();
-	std::vector<std::string> unmetRequirements();
-	void generateRandom(); // Generate a random password
+	bool setValue(std::string v);
 	const std::string& getValue() const { return value; } // Getter for the password
+	void checkComplexity(PasswordValidator pv);
+	void showUnmetRequirements();
+	void generateRandom(); // Generate a random password
 };
 
 #endif // !PASSWORD_H

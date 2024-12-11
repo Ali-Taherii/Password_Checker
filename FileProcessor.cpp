@@ -1,3 +1,5 @@
+#define TINYFILEDIALOGS_IMPLEMENTATION
+#include "tinyfiledialogs.h"
 #include "FileProcessor.h"
 
 std::vector<std::string> FileProcessor::readPasswords(const std::string& fileName) {
@@ -31,4 +33,25 @@ void FileProcessor::writePasswords(const std::vector<std::string>& passwords, co
     }
 
     file.close();
+}
+
+std::vector<std::string> FileProcessor::selectFile() {
+    const char* filterPatterns[] = { "*.txt" }; // Correctly define the filter patterns
+
+    const char* filePath = tinyfd_openFileDialog(
+        "Select the passwords file",              // Title
+        "",                           // Default path
+        1,                            // Number of filters
+        filterPatterns,               // Filter patterns
+        "Text Files",                 // Filter description
+        0                             // Allow multiple selection
+    );
+
+    if (filePath) {
+        return this->readPasswords(filePath);
+    }
+    else {
+        std::cerr << "No file selected." << std::endl;
+        return { };
+    }
 }

@@ -23,6 +23,9 @@ public:
 
     // Generate a list of weak passwords and save to a file
     void generateWeakPasswords(int count);
+    
+    // File selection dialog
+    std::vector<std::string> selectFile(); 
 };
 
 #endif // !FILEPROCESSOR_H
