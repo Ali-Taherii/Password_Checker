@@ -1,5 +1,5 @@
 #define TINYFILEDIALOGS_IMPLEMENTATION
-#include "tinyfiledialogs.h"
+#include "tinyfiledialogs.h" // third-party library to upload files
 #include "FileProcessor.h"
 
 std::vector<std::string> FileProcessor::readPasswords(const std::string& fileName) {
@@ -33,6 +33,28 @@ void FileProcessor::writePasswords(const std::vector<std::string>& passwords, co
     }
 
     file.close();
+}
+
+void FileProcessor::generateWeakPasswords(int count)
+{
+    outputFileName = "generated_weak_passwords.txt";
+
+    // Open the output file for writing
+    std::ofstream outFile(outputFileName);
+    if (!outFile.is_open()) {
+        std::cerr << "Error: Unable to open file '" << outputFileName << "' for writing." << std::endl;
+        return;
+    }
+
+    for (int i = 1; i <= count; ++i) {
+        Password weakPassword;
+        weakPassword.generateWeak();
+        outFile << i << ". " << weakPassword.getValue();
+
+    }
+
+    outFile.close();
+    std::cout << "Weak passwords saved to generated_weak_passwords.txt" << std::endl;
 }
 
 std::vector<std::string> FileProcessor::selectFile() {

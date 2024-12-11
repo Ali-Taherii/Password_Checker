@@ -13,28 +13,28 @@ bool Password::setValue(std::string v)
 void Password::checkComplexity(PasswordValidator pv)
 {
     if (!pv.checkLength(this->value))
-        this->unmetRequirments.push_back("Your password is not long enough (at least 12 characters)");
+        this->unmetRequirements.push_back("Your password is not long enough (at least 12 characters)");
 
     if (!pv.containsLowerCase(this->value))
-        this->unmetRequirments.push_back("Your password does not have any lowercase letters");
+        this->unmetRequirements.push_back("Your password does not have any lowercase letters");
 
     if (!pv.containsUpperCase(this->value))
-        this->unmetRequirments.push_back("Your password does not have any uppercase letters");
+        this->unmetRequirements.push_back("Your password does not have any uppercase letters");
 
     if (!pv.containsNumber(this->value))
-        this->unmetRequirments.push_back("Your password does not have any numbers");
+        this->unmetRequirements.push_back("Your password does not have any numbers");
 
     if (!pv.containsSpecialChar(this->value))
-        this->unmetRequirments.push_back("Your password does not have any special characters");
+        this->unmetRequirements.push_back("Your password does not have any special characters");
 
     if (!pv.isNotCommon(this->value))
-        this->unmetRequirments.push_back("Your password exists in the 10000 weak passwords list");
+        this->unmetRequirements.push_back("Your password exists in the 10000 weak passwords list");
 }
 
 void Password::showUnmetRequirements()
 {
-    if (this->unmetRequirments.size() != 0)
-        for (std::string msg : unmetRequirments)
+    if (this->unmetRequirements.size() != 0)
+        for (std::string msg : unmetRequirements)
             std::cout << msg << std::endl;
 
     else
@@ -77,4 +77,67 @@ void Password::generateRandom() {
     std::shuffle(value.begin(), value.end(), gen);
 }
 
+void Password::generateWeak() {
+    //std::vector<std::string> weakPasswords;
+    //
+    // Read common passwords from file
+    //std::ifstream file(commonPasswordList);
+    //if (file.is_open()) {
+    //    std::string line;
+    //    while (std::getline(file, line)) {
+    //        if (!line.empty()) {
+    //            weakPasswords.push_back(line);
+    //        }
+    //    }
+    //    file.close();
+    //}
+
+    // Seed random generator
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, 5); // Randomly choose a rule to skip
+    int skipRule = dis(gen);
+
+    std::string lower = "abcdefghijklmnopqrstuvwxyz";
+    std::string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    std::string digits = "0123456789";
+    std::string special = "!@#$%^&*()_+[]{}|;:,.<>?";
+    int length;
+
+    value.clear();
+
+    if (skipRule == 0) { // Skip length rule
+        std::uniform_int_distribution<> lenDis(6, 11);
+        length = lenDis(gen);
+    }
+    else {
+        std::uniform_int_distribution<> lenDis(12, 14);
+        length = lenDis(gen);
+    }
+
+    while (value.size() < length) {
+        // Fill the password based on the rules
+        if (skipRule != 1) { // Include lowercase
+            value += lower[dis(gen) % lower.size()];
+        }
+        if (skipRule != 2) { // Include uppercase
+            value += upper[dis(gen) % upper.size()];
+        }
+        if (skipRule != 3) { // Include digits
+            value += digits[dis(gen) % digits.size()];
+        }
+        if (skipRule != 4) { // Include special characters
+            value += special[dis(gen) % special.size()];
+        }
+    }
+
+    // Randomly shuffle the password
+    std::shuffle(value.begin(), value.end(), gen);
+
+    // If skipping weak list check, use a random weak password
+    //if (skipRule == 5 && !weakPasswords.empty()) {
+    //    std::uniform_int_distribution<> weakDis(0, weakPasswords.size() - 1);
+    //    value = weakPasswords[weakDis(gen)];
+    //}
+}
 

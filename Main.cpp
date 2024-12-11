@@ -61,7 +61,9 @@ int main() {
 		}
 		case 4: {
 			ui.displayResults("You chose to generate weak passwords.");
-			// Add logic for weak password generation
+			int passNum;
+			ui.promptUser("weak_password", passNum);
+			fileProcessor.generateWeakPasswords(passNum);
 			break;
 		}
 		case 5: {
