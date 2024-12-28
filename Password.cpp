@@ -1,15 +1,27 @@
 #include "Password.h"
 
+/**
+ * Sets the value of the password if the provided string is not empty.
+ *
+ * @param v The new password value.
+ * @return True if the password was set, false otherwise.
+ */
 bool Password::setValue(std::string v)
 {
-    if (v != ""){
+    if (v != "") {
         this->value = v;
-    return true;
+        return true;
     }
 
     return false;
 }
 
+/**
+ * Checks the complexity of the password using the provided PasswordValidator.
+ * Adds unmet requirements to the unmetRequirements vector.
+ *
+ * @param pv The PasswordValidator to use for checking complexity.
+ */
 void Password::checkComplexity(PasswordValidator pv)
 {
     if (!pv.checkLength(this->value))
@@ -31,6 +43,10 @@ void Password::checkComplexity(PasswordValidator pv)
         this->unmetRequirements.push_back("Your password exists in the 10000 weak passwords list");
 }
 
+/**
+ * Displays the unmet complexity requirements of the password.
+ * If all requirements are met, it indicates that the password meets all complexity requirements.
+ */
 void Password::showUnmetRequirements()
 {
     if (this->unmetRequirements.size() != 0)
@@ -41,6 +57,11 @@ void Password::showUnmetRequirements()
         std::cout << "Your password meets all the complexity requirements" << std::endl;
 }
 
+/**
+ * Generates a random password that meets the complexity requirements.
+ * The generated password will be at least 12 characters long and contain
+ * at least one lowercase letter, one uppercase letter, one number, and one special character.
+ */
 void Password::generateRandom() {
     const int passwordLength = 12;
 
@@ -77,6 +98,10 @@ void Password::generateRandom() {
     std::shuffle(value.begin(), value.end(), gen);
 }
 
+/**
+ * Generates a weak password by randomly skipping one of the complexity rules.
+ * The generated password may not meet all complexity requirements.
+ */
 void Password::generateWeak() {
     //std::vector<std::string> weakPasswords;
     //
@@ -140,4 +165,3 @@ void Password::generateWeak() {
     //    value = weakPasswords[weakDis(gen)];
     //}
 }
-
