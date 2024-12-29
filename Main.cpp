@@ -40,23 +40,7 @@ int main() {
 		}
 		case 3: {
 			ui.displayResults("You chose to check a list of passwords.");
-
-			// Load common passwords for the validator
-			const vector<string> commonPasswords = fileProcessor.readPasswords(".\\10000_weak_passwords.txt");
-			PasswordValidator validator(commonPasswords);
-
-			// Load the user's passowrd list
-			const vector<string> userPasswords = fileProcessor.selectFile();
-
-			for (string p : userPasswords) {
-				Password password;
-				password.setValue(p);
-				cout << "Password: " << p << endl;
-				password.checkComplexity(validator);
-				password.showUnmetRequirements();
-				cout << endl;
-			}
-
+			fileProcessor.analyzePasswords();
 			break;
 		}
 		case 4: {

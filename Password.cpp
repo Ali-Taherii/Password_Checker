@@ -47,14 +47,19 @@ void Password::checkComplexity(PasswordValidator pv)
  * Displays the unmet complexity requirements of the password.
  * If all requirements are met, it indicates that the password meets all complexity requirements.
  */
-void Password::showUnmetRequirements()
+std::string Password::showUnmetRequirements()
 {
-    if (this->unmetRequirements.size() != 0)
+    std::string result;
+
+    if (this->unmetRequirements.size() != 0) {
         for (std::string msg : unmetRequirements)
-            std::cout << msg << std::endl;
+            result += msg + '\n';
+
+        return result;
+    }
 
     else
-        std::cout << "Your password meets all the complexity requirements" << std::endl;
+        return "Your password meets all the complexity requirements";
 }
 
 /**
@@ -102,20 +107,7 @@ void Password::generateRandom() {
  * Generates a weak password by randomly skipping one of the complexity rules.
  * The generated password may not meet all complexity requirements.
  */
-void Password::generateWeak() {
-    //std::vector<std::string> weakPasswords;
-    //
-    // Read common passwords from file
-    //std::ifstream file(commonPasswordList);
-    //if (file.is_open()) {
-    //    std::string line;
-    //    while (std::getline(file, line)) {
-    //        if (!line.empty()) {
-    //            weakPasswords.push_back(line);
-    //        }
-    //    }
-    //    file.close();
-    //}
+void Password::generateWeak(const std::vector<std::string>& commonPasswords) {
 
     // Seed random generator
     std::random_device rd;
@@ -160,8 +152,8 @@ void Password::generateWeak() {
     std::shuffle(value.begin(), value.end(), gen);
 
     // If skipping weak list check, use a random weak password
-    //if (skipRule == 5 && !weakPasswords.empty()) {
-    //    std::uniform_int_distribution<> weakDis(0, weakPasswords.size() - 1);
-    //    value = weakPasswords[weakDis(gen)];
-    //}
+    if (skipRule == 5 && !commonPasswords.empty()) {
+        std::uniform_int_distribution<> weakDis(0, commonPasswords.size() - 1);
+        value = commonPasswords[weakDis(gen)];
+    }
 }

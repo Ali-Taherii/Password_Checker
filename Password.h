@@ -18,9 +18,9 @@ public:
 	bool setValue(std::string v);
 	const std::string& getValue() const { return value; } // Getter for the password
 	void checkComplexity(PasswordValidator pv);
-	void showUnmetRequirements();
+	std::string showUnmetRequirements();
 	void generateRandom(); // Generate a random complex password
-	void generateWeak(); // Generate a random weak password
+	void generateWeak(const std::vector<std::string>&); // Generate a random weak password
 };
 
 #endif // !PASSWORD_H

@@ -1,6 +1,8 @@
 #define TINYFILEDIALOGS_IMPLEMENTATION
 #include "tinyfiledialogs.h" // third-party library to upload files
 #include "FileProcessor.h"
+#include <thread>
+#include <chrono>
 
 std::vector<std::string> FileProcessor::readPasswords(const std::string& fileName) {
     std::vector<std::string> passwords;
@@ -20,7 +22,7 @@ std::vector<std::string> FileProcessor::readPasswords(const std::string& fileNam
     return passwords;
 }
 
-void FileProcessor::writePasswords(const std::vector<std::string>& passwords, const std::string& fileName) {
+void FileProcessor::writeToFile(const std::vector<std::string>& results, const std::string& fileName) {
     std::ofstream file(fileName);
 
     if (!file.is_open()) {
@@ -28,12 +30,36 @@ void FileProcessor::writePasswords(const std::vector<std::string>& passwords, co
         return;
     }
 
-    for (const auto& password : passwords) {
-        file << password << std::endl;
+    for (const auto& r : results) {
+        file << r << std::endl;
     }
 
     file.close();
 }
+
+void FileProcessor::analyzePasswords()
+{
+	outputFileName = "password_analysis.txt";
+
+	// Load common passwords for the validator
+	const std::vector<std::string> commonPasswords = readPasswords(".\\10000_weak_passwords.txt");
+	PasswordValidator validator(commonPasswords);
+
+	// Load the user's passowrd list
+	const std::vector<std::string> userPasswords = selectFile();
+	std::vector<std::string> results;
+
+	for (const auto& p : userPasswords) {
+		Password password;
+		password.setValue(p);
+		password.checkComplexity(validator);
+		results.push_back("Password: " + p + "\n" + password.showUnmetRequirements());
+	}
+
+	writeToFile(results, outputFileName);
+	std::cout << "Analysis results saved to '" << outputFileName << "'." << std::endl;
+}
+
 
 void FileProcessor::generateWeakPasswords(int count)
 {
@@ -46,15 +72,35 @@ void FileProcessor::generateWeakPasswords(int count)
         return;
     }
 
-    for (int i = 1; i <= count; ++i) {
-        Password weakPassword;
-        weakPassword.generateWeak();
-        outFile << i << ". " << weakPassword.getValue();
+    const int barWidth = 50; // Width of the progress bar
 
+    for (int i = 1; i <= count; ++i) {
+        // Generate a weak password
+        Password weakPassword;
+        weakPassword.generateWeak(readPasswords(".\\10000_weak_passwords.txt"));
+        outFile << weakPassword.getValue() << std::endl;
+
+        // Update the progress bar
+        int progress = static_cast<int>((static_cast<double>(i) / count) * barWidth);
+        std::cout << "\r["; // Return to the beginning of the line
+        for (int j = 0; j < barWidth; ++j) {
+            if (j < progress) {
+                std::cout << "#"; // Filled part of the bar
+            }
+            else {
+                std::cout << " "; // Empty part of the bar
+            }
+        }
+        std::cout << "] " << (i * 100 / count) << "%"; // Percentage complete
+        std::cout.flush(); // Ensure the output is updated
+
+        // Simulate some delay for visualization (remove this in production)
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
+    std::cout << std::endl; // Move to the next line after the progress bar
     outFile.close();
-    std::cout << "Weak passwords saved to generated_weak_passwords.txt" << std::endl;
+    std::cout << "Weak passwords saved to '" << outputFileName << "'." << std::endl;
 }
 
 std::vector<std::string> FileProcessor::selectFile() {

@@ -16,8 +16,8 @@ public:
     // Load passwords from a file
     std::vector<std::string> readPasswords(const std::string& fileName);
 
-    // Write passwords to a file
-    void writePasswords(const std::vector<std::string>& passwords, const std::string& fileName);
+    // Write passwords/report to a file
+    void writeToFile(const std::vector<std::string>& passwords, const std::string& fileName);
 
     // Analyze passwords for their complexity and write a report
     void analyzePasswords();
