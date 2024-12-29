@@ -59,7 +59,7 @@ std::string Password::showUnmetRequirements()
     }
 
     else
-        return "Your password meets all the complexity requirements";
+        return "Your password meets all the complexity requirements\n";
 }
 
 /**
@@ -124,7 +124,7 @@ void Password::generateWeak(const std::vector<std::string>& commonPasswords) {
     value.clear();
 
     if (skipRule == 0) { // Skip length rule
-        std::uniform_int_distribution<> lenDis(6, 11);
+        std::uniform_int_distribution<> lenDis(4,7);
         length = lenDis(gen);
     }
     else {
@@ -132,7 +132,7 @@ void Password::generateWeak(const std::vector<std::string>& commonPasswords) {
         length = lenDis(gen);
     }
 
-    while (value.size() < length) {
+    while (value.size() < length && skipRule !=5) {
         // Fill the password based on the rules
         if (skipRule != 1) { // Include lowercase
             value += lower[dis(gen) % lower.size()];

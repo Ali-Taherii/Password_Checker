@@ -1,7 +1,6 @@
 #define TINYFILEDIALOGS_IMPLEMENTATION
 #include "tinyfiledialogs.h" // third-party library to upload files
 #include "FileProcessor.h"
-#include <thread>
 #include <chrono>
 
 std::vector<std::string> FileProcessor::readPasswords(const std::string& fileName) {
@@ -39,25 +38,46 @@ void FileProcessor::writeToFile(const std::vector<std::string>& results, const s
 
 void FileProcessor::analyzePasswords()
 {
-	outputFileName = "password_analysis.txt";
+    outputFileName = "password_analysis.txt";
 
-	// Load common passwords for the validator
-	const std::vector<std::string> commonPasswords = readPasswords(".\\10000_weak_passwords.txt");
-	PasswordValidator validator(commonPasswords);
+    // Load common passwords for the validator
+    const std::vector<std::string> commonPasswords = readPasswords(".\\10000_weak_passwords.txt");
+    PasswordValidator validator(commonPasswords);
 
-	// Load the user's passowrd list
-	const std::vector<std::string> userPasswords = selectFile();
-	std::vector<std::string> results;
+    // Load the user's password list
+    const std::vector<std::string> userPasswords = selectFile();
+    std::vector<std::string> results;
 
-	for (const auto& p : userPasswords) {
-		Password password;
-		password.setValue(p);
-		password.checkComplexity(validator);
-		results.push_back("Password: " + p + "\n" + password.showUnmetRequirements());
-	}
+    const int totalPasswords = userPasswords.size();
+    const int barWidth = 50; // Width of the progress bar
 
-	writeToFile(results, outputFileName);
-	std::cout << "Analysis results saved to '" << outputFileName << "'." << std::endl;
+    for (size_t i = 0; i < totalPasswords; ++i) {
+        const auto& p = userPasswords[i];
+
+        // Analyze the password
+        Password password;
+        password.setValue(p);
+        password.checkComplexity(validator);
+        results.push_back("Password: " + p + "\n" + password.showUnmetRequirements());
+
+        // Update the progress bar
+        int progress = static_cast<int>((static_cast<double>(i + 1) / totalPasswords) * barWidth);
+        std::cout << "\r[";
+        for (int j = 0; j < barWidth; ++j) {
+            if (j < progress) {
+                std::cout << "#";
+            }
+            else {
+                std::cout << " ";
+            }
+        }
+        std::cout << "] " << ((i + 1) * 100 / totalPasswords) << "%";
+        std::cout.flush();
+    }
+
+    std::cout << std::endl; // Move to the next line after the progress bar
+    writeToFile(results, outputFileName);
+    std::cout << "Analysis results saved to '" << outputFileName << "'." << std::endl;
 }
 
 
@@ -93,9 +113,6 @@ void FileProcessor::generateWeakPasswords(int count)
         }
         std::cout << "] " << (i * 100 / count) << "%"; // Percentage complete
         std::cout.flush(); // Ensure the output is updated
-
-        // Simulate some delay for visualization (remove this in production)
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
     std::cout << std::endl; // Move to the next line after the progress bar
